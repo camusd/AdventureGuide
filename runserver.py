@@ -1,3 +1,3 @@
-from flask_rest_service import app
+from application import app
 
-app.run(debug=True)
+app.run(debug=False)

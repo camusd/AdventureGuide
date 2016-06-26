@@ -23,5 +23,5 @@ DEFAULT_REPRESENTATIONS = {'application/json': output_json}
 api = Api(app)
 api.representations = DEFAULT_REPRESENTATIONS
 
-import flask_rest_service.views
-import flask_rest_service.resources
+import application.views
+import application.resources

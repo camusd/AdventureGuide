@@ -1,5 +1,5 @@
 from flask import render_template
-from flask_rest_service import app
+from application import app
 import requests
 import datetime
 

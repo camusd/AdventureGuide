@@ -4,6 +4,7 @@ DateTime==4.1.1
 Flask==0.11.1
 Flask-PyMongo==0.4.1
 Flask-RESTful==0.3.5
+Flask-WTF==0.12
 gunicorn==19.6.0
 itsdangerous==0.24
 Jinja2==2.8
@@ -14,4 +15,5 @@ pytz==2016.4
 requests==2.10.0
 six==1.10.0
 Werkzeug==0.11.10
+WTForms==2.1
 zope.interface==4.2.0

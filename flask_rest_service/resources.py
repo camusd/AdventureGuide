@@ -31,13 +31,13 @@ class Reading(Resource):
         mongo.db.readings.remove({"_id": reading_id})
         return '', 204
 
-class Root(Resource):
+class Status(Resource):
     def get(self):
         return {
             'status': 'OK',
             'mongo': str(mongo.db),
         }
 
-api.add_resource(Root, '/')
+api.add_resource(Status, '/status/')
 api.add_resource(ReadingList, '/readings/')
 api.add_resource(Reading, '/readings/<ObjectId:reading_id>')

@@ -8,7 +8,7 @@ class ReadingList(Resource):
     def __init__(self, *args, **kwargs):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('reading', type=str)
-        super(ReadingList, self).__init__()
+        super().__init__(*args, **kwargs)
 
     def get(self):
         return [x for x in mongo.db.reading.find()]
@@ -20,7 +20,7 @@ class ReadingList(Resource):
 
         jo = json.loads(args['reading'])
         reading_id = mongo.db.readings.insert(jo)
-        return mongo.db.readings.fing_one({"_id": reading_id})
+        return mongo.db.readings.find_one({"_id": reading_id})
 
 class Reading(Resource):
     def get(self, reading_id):

@@ -4,10 +4,10 @@
   <form id="editSurvey">
     First name:<br />
     <input class="firstname" type="text" name="firstname"
-      value="{{ document.firstname }}" /><br /><br />
+      value="{{ document.firstname }}" required /><br /><br />
     Last name:<br />
     <input class="lastname" type="text" name="lastname"
-      value="{{ document.lastname }}"/><br /><br />
+      value="{{ document.lastname }}" required /><br /><br />
     Sex:<br />
     <input class="sex" type="radio" name="sex" value="Male"
       {% if document.sex == "Male" %}checked{% endif %} /> Male<br />
@@ -17,10 +17,10 @@
       {% if document.sex == "Other" %}checked{% endif %} /> Other<br /><br />
     Birthday:<br />
     <input class="birthday" type="date" name="birthday"
-      value="{{ document.birthday }}" /><br /><br />
+      value="{{ document.birthday }}" required /><br /><br />
     Email:<br />
     <input class="email" type="email" name="email"
-      value="{{ document.email }}"/><br /><br />
+      value="{{ document.email }}" required /><br /><br />
     Social Media:<br />
     <input id = "facebook" class="socialmedia" type="checkbox"
       name="socialmedia" value="Facebook"

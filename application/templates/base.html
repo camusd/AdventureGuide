@@ -1,5 +1,9 @@
+<!DOCTYPE html>
 <html>
   <head>
+<script src="https://code.jquery.com/jquery-3.0.0.min.js"
+        integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0="
+        crossorigin="anonymous"></script>
     {% if title %}
     <title>{{ title }}</title>
     {% else %}
@@ -7,7 +11,11 @@
     {% endif %}
   </head>
   <body>
-    <div>Hello Cloud: <a href="/index">Home</a></div>
+    <div>
+      Hello Cloud: <a href="/index">Home</a>
+                   <a href="/surveyResults">Results</a>
+                   <a href="/cloud">Weather</a>
+    </div>
     <hr>
     {% block content %}{% endblock %}
   </body>

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Survey Results</h1>
+  {% for document in documents %}
+    <p>
+      First Name: {{ document.firstname }}
+    </p>
+    <p>
+      Last Name: {{ document.lastname }}
+    </p>
+    <p>
+      Sex: {{ document.sex }}
+    </p>
+    <p>
+      Birthday: {{ document.birthday }}
+    </p>
+    <p>
+      Email: {{ document.email }}
+    </p>
+    <p>
+      Social Media:
+      {% for media in document.socialmedia %}
+        {{ media }}
+      {% endfor %}
+    </p>
+    <a class="editLink" href={{ "surveyResults/" + document._id }}>Edit</a>
+  {% endfor %}
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Edit Survey</h1>
+  <form id="editSurvey">
+    First name:<br />
+    <input class="firstname" type="text" name="firstname"
+      value="{{ document.firstname }}" /><br /><br />
+    Last name:<br />
+    <input class="lastname" type="text" name="lastname"
+      value="{{ document.lastname }}"/><br /><br />
+    Sex:<br />
+    <input class="sex" type="radio" name="sex" value="Male"
+      {% if document.sex == "Male" %}checked{% endif %} /> Male<br />
+    <input class="sex" type="radio" name="sex" value="Female"
+      {% if document.sex == "Female" %}checked{% endif %} /> Female<br />
+    <input class="sex" type="radio" name="sex" value="Other"
+      {% if document.sex == "Other" %}checked{% endif %} /> Other<br /><br />
+    Birthday:<br />
+    <input class="birthday" type="date" name="birthday"
+      value="{{ document.birthday }}" /><br /><br />
+    Email:<br />
+    <input class="email" type="email" name="email"
+      value="{{ document.email }}"/><br /><br />
+    Social Media:<br />
+    <input id = "facebook" class="socialmedia" type="checkbox"
+      name="socialmedia" value="Facebook"
+      {% if "Facebook" in document.socialmedia %}checked{% endif %} />Facebook<br />
+    <input id="twitter" class="socialmedia" type="checkbox"
+      name="socialmedia" value="Twitter"
+      {% if "Twitter" in document.socialmedia %}checked{% endif %} />Twitter<br />
+    <input id="linkedin" class="socialmedia" type="checkbox"
+      name="socialmedia" value="Linkedin"
+      {% if "Linkedin" in document.socialmedia %}checked{% endif %} />Linkedin<br />
+    <input id="tumblr" class="socialmedia" type="checkbox"
+      name="socialmedia" value="Tumblr"
+      {% if "Tumblr" in document.socialmedia %}checked{% endif %} />Tumblr<br />
+    <input id="instagram" class="socialmedia" type="checkbox"
+      name="socialmedia" value="Instagram"
+      {% if "Instagram" in document.socialmedia %}checked{% endif %} />Instagram<br />
+    <input id="reddit" class="socialmedia" type="checkbox"
+      name="socialmedia" value="Reddit"
+      {% if "Reddit" in document.socialmedia %}checked{% endif %} />Reddit<br /><br />
+    <input class="_id" type="hidden" name="_id" value="{{ document._id }}" />
+    <input class="submit" type="submit" value="Submit" style="float: left;" />
+  </form>
+  <form id="deleteSurvey">
+    <input class="_id" type="hidden" name="_id" value="{{ document._id }}" />
+    <input class="submit" type="submit" value="Delete" style="float: left;" />
+  </form>
+  <script type="text/javascript"
+    src="{{ url_for('static', filename='js/forms.js') }}"></script>
+  <script type="text/javascript"
+    src="{{ url_for('static', filename='js/editSurvey.js') }}"></script>
+{% endblock %}

@@ -1,2 +1,5 @@
 # Heroku Files
 *.pyc
+
+# Environment Variables
+*.env

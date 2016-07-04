@@ -27,6 +27,7 @@ $("#deleteSurvey").on("submit", function(e) {
         url : "../api/" + $.parseJSON(data)["_id"],
         type : "DELETE",
         success : function(result) {
+            alert("Survey deleted successfuly");
             window.location.href = "/surveyResults";
         },
         error : function(xhr, resp, text) {

@@ -11,6 +11,7 @@ $("#studentSurvey").on("submit", function(e) {
         data : data,
         context : Form,
         success : function(result) {
+            alert("Survey saved successfuly");
             window.location.href = "/surveyResults";
         },
         error : function(xhr, resp, text) {

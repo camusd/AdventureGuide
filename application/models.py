@@ -4,12 +4,12 @@ from bson.objectid import ObjectId
 
 
 class StudentModel():
-    def getData(self, object_id=None):
-        if object_id:
-            survey_data = mongo.db.student.find_one(
-                {'_id': ObjectId(object_id)})
-            survey_data['_id'] = str(survey_data['_id'])
-            return survey_data
+    def getData(self, _id=None):
+        if _id:
+            data = mongo.db.student.find_one(
+                {'_id': ObjectId(_id)})
+            data['_id'] = str(data['_id'])
+            return data
         else:
             data = []
             cursor = mongo.db.student.find()

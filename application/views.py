@@ -30,8 +30,8 @@ def surveyResults():
                            documents=response)
 
 
-@app.route('/surveyResults/<object_id>')
-def editSurveyResults(object_id):
-    response = StudentModel().getData(object_id)
+@app.route('/surveyResults/<_id>')
+def editSurveyResults(_id):
+    response = StudentModel().getData(_id)
     return render_template('editSurvey.html',
                            document=response)

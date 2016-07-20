@@ -1,22 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-<script src="https://code.jquery.com/jquery-3.0.0.min.js"
-        integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0="
-        crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
     {% if title %}
     <title>{{ title }}</title>
     {% else %}
     <title>Hello Cloud!</title>
     {% endif %}
+    <style>.content {padding-top: 80px;}</style>
   </head>
   <body>
-    <div>
-      Hello Cloud: <a href="/index">Home</a>
-                   <a href="/surveyResults">Results</a>
-                   <a href="/cloud">Weather</a>
+
+    {%- block topbar -%}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <a href="/">Home</a>
+          <a href="/surveyResults">Results</a>
+          <a href="/cloud">Weather</a>
+        </div>
+      </div>
+    </nav>
+    {%- endblock -%}
+    <div class="container">
+      <div class="content">
+        {% block page_header %}{% endblock %}
+        {% block content %}{% endblock %}
+      </div>
     </div>
-    <hr>
-    {% block content %}{% endblock %}
+    {% block js_footer %}{% endblock %}
   </body>
 </html>

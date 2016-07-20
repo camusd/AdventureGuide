@@ -1,15 +1,19 @@
 {% extends "base.html" %}
+{% block page_header %}
+  <div class="page-header">
+    <h1>Student Survey</h1>
+  </div>
+{% endblock %}
 {% block content %}
-  <h1>Student Survey</h1>
   <form id="studentSurvey">
     First name:<br />
     <input class="firstname" type="text" name="firstname" autofocus required /><br /><br />
     Last name:<br />
     <input class="lastname" type="text" name="lastname" required /><br /><br />
     Sex:<br />
-    <input class="sex" type="radio" name="sex" value="Male" checked/> Male<br />
-    <input class="sex" type="radio" name="sex" value="Female" /> Female<br />
-    <input class="sex" type="radio" name="sex" value="Other" /> Other<br /><br />
+    <input class="sex" type="radio" name="sex" value="M" checked/> Male<br />
+    <input class="sex" type="radio" name="sex" value="F" /> Female<br />
+    <input class="sex" type="radio" name="sex" value="O" /> Other<br /><br />
     Birthday:<br />
     <input class="birthday" type="date" name="birthday" required /><br /><br />
     Email:<br />
@@ -33,4 +37,7 @@
     src="{{ url_for('static', filename='js/forms.js') }}"></script>
   <script type="text/javascript"
     src="{{ url_for('static', filename='js/survey.js') }}"></script>
+{% endblock %}
+{% block js_footer %}
+  <script   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
 {% endblock %}

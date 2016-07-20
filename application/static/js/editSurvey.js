@@ -1,10 +1,12 @@
 $("#editSurvey").on("submit", function(e) {
     e.preventDefault();
-    data = getFormData(this);
-    Form = this;
+    let data = getFormData(this);
+    let Form = this;
+    let href = $(location).attr("href");
+
     $.ajax({
         cache : false,
-        url : "/api",
+        url : href
         type : "PUT",
         contentType : "application/json",
         dataType : "json",
@@ -22,9 +24,10 @@ $("#editSurvey").on("submit", function(e) {
 $("#deleteSurvey").on("submit", function(e) {
     e.preventDefault();
     data = getFormData(this);
+    let href = $(location).attr("href");
     $.ajax({
         cache : false,
-        url : "../api/" + $.parseJSON(data)["_id"],
+        url : href
         type : "DELETE",
         success : function(result) {
             alert("Survey deleted successfuly");

@@ -1,6 +1,10 @@
 {% extends "base.html" %}
+{% block page_header %}
+  <div class="page-header">
+    <h1>Survey Results</h1>
+  </div>
+{% endblock %}
 {% block content %}
-  <h1>Survey Results</h1>
   {% for document in documents %}
     <p>
       First Name: {{ document.firstname }}
@@ -23,6 +27,9 @@
         {{ media }}
       {% endfor %}
     </p>
-    <a class="editLink" href={{ "surveyResults/" + document._id }}>Edit</a>
+    <a class="editLink" href={{ "surveyResults/" ~ document.id }}>Edit</a>
   {% endfor %}
+{% endblock %}
+{% block js_footer %}
+  <script   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
 {% endblock %}

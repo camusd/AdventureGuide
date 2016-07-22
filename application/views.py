@@ -2,8 +2,8 @@ from flask import render_template, jsonify, request, Blueprint, url_for, redirec
 from flask.views import MethodView
 from application import models, app
 from flask_mongoengine.wtf import model_form
+from datetime import datetime
 import requests
-import datetime
 
 surveys = Blueprint('surveys', __name__, template_folder='templates')
 cloud = Blueprint('cloud', __name__, template_folder='templates')
@@ -48,7 +48,8 @@ class ListView(MethodView):
     def get(self):
         students = models.Student.objects.all()
         for student in students:
-            student.birthday = student.birthday.strftime("%m-%d-%Y")
+            student.birthday = \
+                datetime.strptime(str(student.birthday), "%m-%d-%Y")
         return render_template('surveys/list.html',
                                documents=students)
 

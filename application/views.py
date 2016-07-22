@@ -1,4 +1,4 @@
-from flask import render_template, jsonify, request, Blueprint, url_for, redirect
+from flask import render_template, jsonify, request, Blueprint, url_for, redirect, abort
 from flask.views import MethodView
 from application import models, app
 from flask_mongoengine.wtf import model_form
@@ -61,27 +61,22 @@ class EditView(MethodView):
                                form=form)
 
     def put(self, _id):
-        StudentForm = model_form(models.Student, field_args={'sex': {'radio': True}})
+        StudentForm = model_form(models.Student,
+            field_args={'sex': {'radio': True}})
         data = request.get_json()
         if not data:
-            response = jsonify({"message": "Expected data to be \
-                formated as JSON"})
-            response.staus_code = 400
+            abort(404)
+        form = StudentForm(**data)
+        if form.validate():
+            student = models.Student.objects.get_or_404(id=_id)
+            form.populate_obj(student)
+            student.save()
+            response = jsonify(student)
+            response.staus_code = 201
+            response.headers['Location'] = '/surveyResults/' + \
+                str(student.id)
             return response
-        else:
-            form = StudentForm(**data)
-            form.validate()
-            if form.validate():
-                student = models.Student.objects.get_or_404(id=_id)
-                form.populate_obj(student)
-                student.save()
-                response = jsonify(student)
-                response.staus_code = 201
-                response.headers['Location'] = '/surveyResults/' + \
-                    str(student.id)
-                return response
-        print(form.errors)
-        return(jsonify({'message': 'hello'}))
+        abort(400)
 
     def delete(self, _id):
         student = models.Student.objects.get_or_404(id=_id)
@@ -97,7 +92,7 @@ surveys.add_url_rule('/surveyResults/<_id>', view_func=EditView.as_view('edit'))
 
 class CloudView(MethodView):
     def get(self):
-        time = datetime.datetime.now().strftime("%H:%M:%S")
+        time = datetime.now().strftime("%H:%M:%S")
         result1 = requests.get('http://api.wunderground.com/api/8dab10257277cb6e/conditions/q/OR/Corvallis.json')
         result2 = requests.get('http://api.wunderground.com/api/8dab10257277cb6e/forecast/q/OR/Corvallis.json')
         weather = result1.json()

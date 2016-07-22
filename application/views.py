@@ -1,12 +1,13 @@
 from flask import render_template, jsonify, request, Blueprint, url_for, redirect
 from flask.views import MethodView
-from application import models
+from application import models, app
 from flask_mongoengine.wtf import model_form
 import requests
-from datetime import datetime
+import datetime
 
 surveys = Blueprint('surveys', __name__, template_folder='templates')
 cloud = Blueprint('cloud', __name__, template_folder='templates')
+
 
 class SubmitView(MethodView):
 

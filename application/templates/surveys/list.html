@@ -16,18 +16,15 @@
       Sex: {{ document.sex }}
     </p>
     <p>
-      Birthday: {{ document.birthday }}
+      Birthday: {{ document.birthday.strftime("%m-%d-%Y") }}
     </p>
     <p>
       Email: {{ document.email }}
     </p>
     <p>
-      Social Media:
-      {% for media in document.socialmedia %}
-        {{ media }}
-      {% endfor %}
+      Social Media: {{ document.socialmedia|join(', ') }}
     </p>
-    <a class="editLink" href={{ "surveyResults/" ~ document.id }}>Edit</a>
+    <a class="editLink" href={{ "surveyResults/" ~ document.id }}>Edit</a><br /><br />
   {% endfor %}
 {% endblock %}
 {% block js_footer %}

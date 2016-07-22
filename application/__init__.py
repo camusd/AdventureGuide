@@ -14,15 +14,14 @@ MONGO_URL = os.environ.get('MONGO_URL')
 if not MONGO_URL:
     MONGO_URL = "mongodb://localhost:27017/rest"
 
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY:
+    SECRET_KEY = "KeepThisS3cr3t!!@"
+
 app = Flask(__name__)
 
-# app.config['MONGO_URI'] = MONGO_URL
-# app.config['MONGO_DBNAME'] = "students_db"
-# mongo = PyMongo(app, config_prefix='MONGO')
-
-# mongoengine connect
 app.config['MONGODB_SETTINGS'] = {'DB': 'helloCloud', 'host': MONGO_URL}
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['SECRET_KEY'] = SECRET_KEY
 mongo = MongoEngine(app)
 
 
@@ -35,8 +34,7 @@ DEFAULT_REPRESENTATIONS = {'application/json': output_json}
 api = Api(app)
 api.representations = DEFAULT_REPRESENTATIONS
 
-# from application import resources
-# from application import views
+from application import resources
 
 def register_blueprints(app):
     from application.views import surveys

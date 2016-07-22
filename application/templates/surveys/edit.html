@@ -44,16 +44,17 @@
     <input id="reddit" class="socialmedia" type="checkbox"
       name="socialmedia" value="Reddit"
       {% if "Reddit" in document.socialmedia %}checked{% endif %} />Reddit<br /><br />
+    {{ form.csrf_token }}
     <input class="submit" type="submit" value="Submit" style="float: left;" />
   </form>
   <form id="deleteSurvey">
+    {{ form.csrf_token }}
     <input class="submit" type="submit" value="Delete" style="float: left;" />
   </form>
+{% endblock %}
+{% block js_footer %}
   <script type="text/javascript"
     src="{{ url_for('static', filename='js/forms.js') }}"></script>
   <script type="text/javascript"
     src="{{ url_for('static', filename='js/editSurvey.js') }}"></script>
-{% endblock %}
-{% block js_footer %}
-  <script   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
 {% endblock %}

@@ -11,9 +11,9 @@
     Last name:<br />
     <input class="lastname" type="text" name="lastname" required /><br /><br />
     Sex:<br />
-    <input class="sex" type="radio" name="sex" value="M" checked/> Male<br />
-    <input class="sex" type="radio" name="sex" value="F" /> Female<br />
-    <input class="sex" type="radio" name="sex" value="O" /> Other<br /><br />
+    <input class="sex" type="radio" name="sex" value="Male" checked/> Male<br />
+    <input class="sex" type="radio" name="sex" value="Female" /> Female<br />
+    <input class="sex" type="radio" name="sex" value="Other" /> Other<br /><br />
     Birthday:<br />
     <input class="birthday" type="date" name="birthday" required /><br /><br />
     Email:<br />
@@ -31,13 +31,13 @@
       name="socialmedia" value="Instagram" />Instagram<br />
     <input id="reddit" class="socialmedia" type="checkbox"
       name="socialmedia" value="Reddit" />Reddit<br /><br />
+    {{ form.csrf_token }}
     <input class="submit" type="submit" value="Submit" />
   </form>
+{% endblock %}
+{% block js_footer %}
   <script type="text/javascript"
     src="{{ url_for('static', filename='js/forms.js') }}"></script>
   <script type="text/javascript"
     src="{{ url_for('static', filename='js/survey.js') }}"></script>
-{% endblock %}
-{% block js_footer %}
-  <script   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
 {% endblock %}

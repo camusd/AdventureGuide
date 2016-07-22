@@ -1,6 +1,6 @@
 from flask import render_template, jsonify, request, Blueprint, url_for, redirect
 from flask.views import MethodView
-from application.models import Student
+from application import models
 from flask_mongoengine.wtf import model_form
 import requests
 import datetime
@@ -11,17 +11,16 @@ cloud = Blueprint('cloud', __name__, template_folder='templates')
 class SubmitView(MethodView):
 
     def get(self):
-        StudentForm = model_form(Student, field_args={'sex': {'radio': True}})
+        StudentForm = model_form(models.Student,
+            field_args={'sex': {'radio': True}})
         form = StudentForm()
-        for field in form:
-            print(field)
-        return render_template('surveys/submit.html'
+        return render_template('surveys/submit.html',
                                form=form)
 
     def post(self):
-        StudentForm = model_form(Student, field_args={'sex': {'radio': True}})
+        StudentForm = model_form(models.Student,
+            field_args={'sex': {'radio': True}})
         data = request.get_json()
-        data['birthday'] = datetime.datetime.strptime(data['birthday'], '%Y-%m-%d')
         if not data:
             response = jsonify({"message": "Expected data to be \
                 formated as JSON"})
@@ -29,24 +28,24 @@ class SubmitView(MethodView):
             return response
         else:
             form = StudentForm(**data)
-            # for field in form:
-            #     print(field)
+            form.validate()
             if form.validate():
-                student = Student(**data)
+                student = models.Student()
+                form.populate_obj(student)
                 student.save()
                 response = jsonify(student)
                 response.staus_code = 201
                 response.headers['Location'] = '/surveyResults/' + \
                     str(student.id)
                 return response
-            print(form.errors)
-            return(jsonify({'message': 'hello'}))
+        print(form.errors)
+        return(jsonify({'message': 'hello'}))
 
 
 
 class ListView(MethodView):
     def get(self):
-        students = Student.objects()
+        students = models.Student.objects.all()
         return render_template('surveys/list.html',
                                documents=students)
 
@@ -54,8 +53,40 @@ class ListView(MethodView):
 class EditView(MethodView):
     def get(self, _id):
         student = models.Student.objects.get(id=_id)
+        StudentForm = model_form(models.Student, field_args={'sex': {'radio': True}})
+        form = StudentForm()
         return render_template('surveys/edit.html',
-                               document=student)
+                               document=student,
+                               form=form)
+
+    def put(self, _id):
+        StudentForm = model_form(models.Student, field_args={'sex': {'radio': True}})
+        data = request.get_json()
+        if not data:
+            response = jsonify({"message": "Expected data to be \
+                formated as JSON"})
+            response.staus_code = 400
+            return response
+        else:
+            form = StudentForm(**data)
+            form.validate()
+            if form.validate():
+                student = models.Student.objects.get_or_404(id=_id)
+                form.populate_obj(student)
+                student.save()
+                response = jsonify(student)
+                response.staus_code = 201
+                response.headers['Location'] = '/surveyResults/' + \
+                    str(student.id)
+                return response
+        print(form.errors)
+        return(jsonify({'message': 'hello'}))
+
+    def delete(self, _id):
+        student = models.Student.objects.get_or_404(id=_id)
+        student.delete()
+        return ('', 204)
+
 
 
 surveys.add_url_rule('/', view_func=SubmitView.as_view('submit'))

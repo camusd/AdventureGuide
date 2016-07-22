@@ -6,7 +6,7 @@ $("#editSurvey").on("submit", function(e) {
 
     $.ajax({
         cache : false,
-        url : href
+        url : href,
         type : "PUT",
         contentType : "application/json",
         dataType : "json",
@@ -27,7 +27,7 @@ $("#deleteSurvey").on("submit", function(e) {
     let href = $(location).attr("href");
     $.ajax({
         cache : false,
-        url : href
+        url : href,
         type : "DELETE",
         success : function(result) {
             alert("Survey deleted successfuly");

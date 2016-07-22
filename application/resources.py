@@ -1,191 +1,92 @@
-from flask import jsonify, url_for, request, redirect
-from flask_restful import Resource
+from flask import jsonify, url_for, request, redirect, abort
+from flask_restful import Resource, reqparse
 from application import api, mongo, APP_URL
 from bson.objectid import ObjectId
-# from .models import StudentModel
-# from . import models
-#
-#
-# class Status(Resource):
-#     def get(self):
-#         return {
-#             'status': 'OK',
-#             'mongo': str(mongo.db),
-#         }
-#
-#
-# class Student(Resource):
-#     def get(self, _id=None):
-#         data = StudentModel().getData(_id)
-#         return jsonify(data)
-#
-#     def post(self):
-#         data = request.get_json()
-#         if not data:
-#             data = {"message": "ERROR"}
-#             return jsonify(data)
-#         else:
-#             mongo.db.student.insert_one(data)
-#
-#     def put(self):
-#         data = request.get_json()
-#         key = data['_id']
-#         del data['_id']
-#         mongo.db.student.replace_one({"_id": ObjectId(key)}, data)
-#
-#     def delete(self, _id):
-#         mongo.db.student.remove({'_id': ObjectId(_id)})
-#
-#
-# class MajorAttractions(Resource):
-#     def get(self, _id=None):
-#         if _id:
-#             data = mongo.db.majorAttractions.find_one({"_id": _id})
-#             if not data:
-#                 response = jsonify({"message": "Major Attraction not found"})
-#                 response.status_code = 404
-#                 return response
-#             else:
-#                 data["_id"] = str(data["_id"])
-#                 response = jsonify(data)
-#                 response.status_code = 200
-#                 return response
-#         else:
-#             data = []
-#             cursor = mongo.db.majorAttractions.find()
-#             for attraction in cursor:
-#                 attraction['_id'] = str(attraction['_id'])
-#                 data.append(attraction)
-#             response = jsonify(data)
-#             response.status_code = 200
-#             return response
-#
-#     def post(self):
-#         data = request.get_json()
-#         if not data:
-#             response = jsonify({"message": "Problems parsing JSON"})
-#             response.staus_code = 400
-#             return response
-#         elif not "name" in data or not "description" in data or \
-#             not "type" in data or not "details" in data or \
-#             not "location" in data:
-#             response = jsonify({"message:": "name, description, type, "
-#                 + "details, and location are required fields"})
-#             response.status_code = 422
-#             return response
-#         else:
-#             _id = mongo.db.majorAttractions.insert_one(data)
-#             data['_id'] = str(data['_id'])
-#             response = jsonify(data)
-#             response.status_code = 201
-#             response.headers['Location'] = '/api/majorAttraction/' + \
-#                 str(_id.inserted_id)
-#             return response
-#
-#     def put(self, _id=None):
-#         if _id:
-#             data = request.get_json()
-#             if not data:
-#                 response = jsonify({"message": "Expected data to be \
-#                     formated as JSON"})
-#                 response.staus_code = 400
-#                 return response
-#             elif not "name" in data or not "description" in data or \
-#                 not "type" in data or not "details" in data or \
-#                 not "location" in data:
-#                 response = jsonify({"message:": "name, description, type, \
-#                     details, and location are required fields"})
-#                 response.status_code = 422
-#                 return response
-#             else:
-#                 mongo.db.majorAttractions.replace_one({"_id": _id}, data)
-#                 data['_id'] = str(_id)
-#                 response = jsonify(data)
-#                 response.status_code = 200
-#                 return response
-#         else:
-#             response = jsonify({"message": "Not Found"})
-#             response.status_code = 404
-#             return response
-#
-#
-#     def delete(self, _id=None):
-#         if _id:
-#             data = mongo.db.majorAttractions.delete_one({"_id": _id})
-#             if not data.deleted_count:
-#                 response = jsonify({"message": "Major Attraction not found"})
-#                 response.status_code = 404
-#                 return response
-#             else:
-#                 return ('', 204)
-#         else:
-#             data = mongo.db.majorAttractions.delete_many({})
-#             return ('', 204)
-#
-#
-#
-# api.add_resource(Status, '/status')
-# api.add_resource(Student, "/api", endpoint="students")
-# api.add_resource(Student, "/api/<string:_id>",
-#                  endpoint="student")
-# api.add_resource(MajorAttractions, "/api/majorAttractions",
-#                  endpoint="majorAttractions")
-# api.add_resource(MajorAttractions,
-#                  "/api/majorAttractions/<ObjectId:_id>",
-#                  endpoint="majorAttraction")
+from . import models
+import json
 
 
+class MajorAttractions(Resource):
+    def __init__(self):
+        self.root_parser = reqparse.RequestParser()
+        self.root_parser.add_argument('name', type=str, required=True,
+            location='json')
+        self.root_parser.add_argument('description', type=str,
+            required=True, location='json')
+        self.root_parser.add_argument('details', type=dict,
+            location='json')
+        self.root_parser.add_argument('location', type=dict,
+            location='json')
+        self.location_parser = reqparse.RequestParser()
+        self.location_parser.add_argument('type', type=str,
+            required=True, location='location')
+        self.location_parser.add_argument('coordinates', type=list,
+            required=True, location='location')
+        super(MajorAttractions, self).__init__()
+
+    def get(self, _id=None):
+        if _id:
+            MajorAttraction = models.MajorAttraction.objects.get_or_404(id=_id)
+            response = jsonify(MajorAttraction)
+            response.status_code = 200
+            return response
+        else:
+            data = []
+            cursor = models.MajorAttraction.objects.all()
+            for attraction in cursor:
+                data.append(attraction)
+            response = jsonify(data)
+            response.status_code = 200
+            return response
+
+    def post(self):
+        data = request.get_json()
+        if not data:
+            abort(400)
+        root_args = self.root_parser.parse_args()
+        location_args = self.location_parser.parse_args(req=root_args)
+        majorAttraction = models.MajorAttraction(**data)
+        majorAttraction.save()
+        response = jsonify(majorAttraction)
+        response.status_code = 201
+        response.headers['Location'] = '/api/majorAttraction/' + \
+            str(majorAttraction.id)
+        return response
+
+    def put(self, _id=None):
+        if _id:
+            data = request.get_json()
+            if not data:
+                abort(400)
+            if data['_id']:
+                del data['_id']
+            root_args = self.root_parser.parse_args()
+            location_args = self.location_parser.parse_args(req=root_args)
+            majorAttraction = models.MajorAttraction.objects.get_or_404(id=_id)
+            majorAttraction.update(**data)
+            majorAttraction = models.MajorAttraction.objects.get_or_404(id=_id)
+            response = jsonify(majorAttraction)
+            response.status_code = 200
+            return response
+        else:
+            response = jsonify({"message": "Not Found"})
+            response.status_code = 404
+            return response
+
+    def delete(self, _id=None):
+        if _id:
+            majorAttraction = models.MajorAttraction.objects.get_of_404(id=_id)
+            majorAttraction.delete()
+            return ('', 204)
+        else:
+            cursor = models.MajorAttraction.objects.all()
+            for attraction in cursor:
+                attraction.delete()
+            return ('', 204)
 
 
-
-
-
-# class Student(Resource):
-#     def get(self, _id=None):
-#         if _id:
-#             student = models.Students.objects.get(id=_id)
-#             return jsonify(student)
-#         else:
-#             students = models.Students.objects()
-#             return jsonify(students)
-#
-#     def post(self):
-#         data = request.get_json()
-#         if not data:
-#             response = jsonify({"message": "Expected data to be \
-#                 formated as JSON"})
-#             response.staus_code = 400
-#             return response
-#         else:
-#             print(data['birthday'])
-#             student = models.Students(**data)
-#             student.save()
-#             response = jsonify(student)
-#             response.status_code = 201
-#             response.headers['Location'] = '/api/' + \
-#                 str(student.id)
-#             return response
-#
-#     def put(self, _id=None):
-#         if _id:
-#             data = request.get_json()
-#             student = models.Students.objects.get(id=_id)
-#             student.update(**data)
-#             student = models.Students.objects.get(id=_id)
-#             response = jsonify(student)
-#             response.status_code = 200
-#             return response
-#         else:
-#             response = jsonify({"message": "Not Found"})
-#             response.status_code = 404
-#             return response
-#
-#     def delete(self, _id):
-#         student = models.Students.objects.get(id=_id)
-#         student.delete()
-#         return ('', 204)
-#
-#
-# api.add_resource(Student, "/api", endpoint="students")
-# api.add_resource(Student, "/api/<string:_id>",
-#                  endpoint="student")
+api.add_resource(MajorAttractions, "/api/majorAttractions",
+                 endpoint="majorAttractions")
+api.add_resource(MajorAttractions,
+                 "/api/majorAttractions/<string:_id>",
+                 endpoint="majorAttraction")

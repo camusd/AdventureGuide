@@ -1,5 +1,9 @@
 # Heroku Files
 *.pyc
+__pycache__/
 
 # Environment Variables
 *.env
+
+# Virtual Environment
+eb-virt/

@@ -13,12 +13,12 @@
     <input class="lastname" type="text" name="lastname"
       value="{{ document.lastname }}" required /><br /><br />
     Sex:<br />
-    <input class="sex" type="radio" name="sex" value="M"
-      {% if document.sex == "M" %}checked{% endif %} /> Male<br />
-    <input class="sex" type="radio" name="sex" value="F"
-      {% if document.sex == "F" %}checked{% endif %} /> Female<br />
-    <input class="sex" type="radio" name="sex" value="O"
-      {% if document.sex == "O" %}checked{% endif %} /> Other<br /><br />
+    <input class="sex" type="radio" name="sex" value="Male"
+      {% if document.sex == "Male" %}checked{% endif %} /> Male<br />
+    <input class="sex" type="radio" name="sex" value="Female"
+      {% if document.sex == "Female" %}checked{% endif %} /> Female<br />
+    <input class="sex" type="radio" name="sex" value="Other"
+      {% if document.sex == "Other" %}checked{% endif %} /> Other<br /><br />
     Birthday:<br />
     <input class="birthday" type="date" name="birthday"
       value="{{ document.birthday.strftime('%Y-%m-%d') }}" required /><br /><br />

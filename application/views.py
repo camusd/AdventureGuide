@@ -3,7 +3,7 @@ from flask.views import MethodView
 from application import models
 from flask_mongoengine.wtf import model_form
 import requests
-import datetime
+from datetime import datetime
 
 surveys = Blueprint('surveys', __name__, template_folder='templates')
 cloud = Blueprint('cloud', __name__, template_folder='templates')

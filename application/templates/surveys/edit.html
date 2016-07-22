@@ -21,7 +21,7 @@
       {% if document.sex == "O" %}checked{% endif %} /> Other<br /><br />
     Birthday:<br />
     <input class="birthday" type="date" name="birthday"
-      value="{{ document.birthday }}" required /><br /><br />
+      value="{{ document.birthday.strftime('%Y-%m-%d') }}" required /><br /><br />
     Email:<br />
     <input class="email" type="email" name="email"
       value="{{ document.email }}" required /><br /><br />

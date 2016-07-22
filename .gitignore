@@ -6,4 +6,4 @@ __pycache__/
 *.env
 
 # Virtual Environment
-eb-virt/
+venv/

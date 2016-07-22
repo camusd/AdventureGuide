@@ -47,6 +47,8 @@ class SubmitView(MethodView):
 class ListView(MethodView):
     def get(self):
         students = models.Student.objects.all()
+        for student in students:
+            student.birthday = student.birthday.strftime("%m-%d-%Y")
         return render_template('surveys/list.html',
                                documents=students)
 

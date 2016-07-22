@@ -1,9 +1,7 @@
 import os
-from flask import Flask
+from flask import Flask, make_response
 from flask_restful import Resource, Api
-from flask_pymongo import PyMongo
 from flask_mongoengine import MongoEngine
-from flask import make_response
 from bson.json_util import dumps
 
 APP_URL = os.environ.get('APP_URL')

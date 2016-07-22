@@ -1,9 +1,8 @@
 from flask import jsonify, url_for, request, redirect, abort
 from flask_restful import Resource, reqparse
-from application import api, mongo, APP_URL
+from application import api
 from bson.objectid import ObjectId
 from . import models
-import json
 
 
 class MajorAttractions(Resource):

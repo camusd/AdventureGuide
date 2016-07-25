@@ -12,8 +12,17 @@ class Student(mongo.Document):
     socialmedia = mongo.ListField(mongo.StringField(max_length=255))
 
 
-class MajorAttraction(mongo.Document):
+class MajorAttraction(mongo.DynamicDocument):
     name = mongo.StringField(max_length=255, required=True)
     description = mongo.StringField(max_length=65535, required=True)
+    details = mongo.DictField()
+    location = mongo.PointField()
+
+
+class MinorAttraction(mongo.DynamicDocument):
+    name = mongo.StringField(max_length=255, required=True)
+    description = mongo.StringField(max_length=65535, required=True)
+    majorAttraction = mongo.ReferenceField(document_type=MajorAttraction,
+        required=True)
     details = mongo.DictField()
     location = mongo.PointField()

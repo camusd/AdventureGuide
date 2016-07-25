@@ -32,7 +32,21 @@ DEFAULT_REPRESENTATIONS = {'application/json': output_json}
 api = Api(app)
 api.representations = DEFAULT_REPRESENTATIONS
 
-from application import resources
+def register_resources():
+    from application.resources import MajorAttractions
+    from application.resources import MinorAttractions
+    api.add_resource(MajorAttractions, "/api/majorAttractions",
+                     endpoint="majorAttractions")
+    api.add_resource(MajorAttractions,
+                     "/api/majorAttractions/<string:_id>",
+                     endpoint="majorAttraction")
+    api.add_resource(MinorAttractions, "/api/minorAttractions",
+                     endpoint="minorAttractions")
+    api.add_resource(MinorAttractions,
+                     "/api/minorAttractions/<string:_id>",
+                     endpoint="minorAttraction")
+
+register_resources()
 
 def register_blueprints(app):
     from application.views import surveys

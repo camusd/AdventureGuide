@@ -106,13 +106,6 @@ class MajorAttractions(Resource):
             return ('', 204)
 
 
-api.add_resource(MajorAttractions, "/api/majorAttractions",
-                 endpoint="majorAttractions")
-api.add_resource(MajorAttractions,
-                 "/api/majorAttractions/<string:_id>",
-                 endpoint="majorAttraction")
-
-
 class MinorAttractions(Resource):
     def __init__(self):
         self.root_parser = reqparse.RequestParser()
@@ -218,10 +211,3 @@ class MinorAttractions(Resource):
             for attraction in cursor:
                 attraction.delete()
             return ('', 204)
-
-
-api.add_resource(MinorAttractions, "/api/minorAttractions",
-                 endpoint="minorAttractions")
-api.add_resource(MinorAttractions,
-                 "/api/minorAttractions/<string:_id>",
-                 endpoint="minorAttraction")

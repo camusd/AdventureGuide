@@ -2,6 +2,7 @@ from flask import jsonify
 from application import mongo
 from bson.objectid import ObjectId
 
+
 class Student(mongo.Document):
     firstname = mongo.StringField(max_length=255, required=True)
     lastname = mongo.StringField(max_length=255, required=True)
@@ -26,3 +27,7 @@ class MinorAttraction(mongo.DynamicDocument):
         required=True)
     details = mongo.DictField()
     location = mongo.PointField()
+
+
+#TODO: change details field to embedded document so attractions can share model
+#TODO: add user and comment models

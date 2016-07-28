@@ -28,6 +28,13 @@ class Attraction(mongo.DynamicDocument):
     description = mongo.StringField(max_length=65535, required=True)
     details = mongo.EmbeddedDocumentField(document_type=AttractionDetails)
     location = mongo.PointField()
+    reviews = mongo.IntField(required=True, default=0)
+
+    def increment_reviews(self):
+        self.reviews += 1
+
+    def decrement_reviews(self):
+        self.reviews -= 1
 
     meta = {'allow_inheritance': True}
 
@@ -38,7 +45,6 @@ class MajorAttraction(Attraction):
 class MinorAttraction(Attraction):
     majorAttraction = mongo.ReferenceField(document_type=MajorAttraction,
         required=True)
-    reviews = mongo.IntField(required=True, default=0)
 
 
 class User(mongo.DynamicDocument):
@@ -52,15 +58,19 @@ class User(mongo.DynamicDocument):
 
 
 class Review(mongo.DynamicDocument):
-    user = mongo.ReferenceField(document_type=User, required=True)
+    user = mongo.ReferenceField(document_type=User, required=True,
+        reverse_delete_rule=2)
     body = mongo.StringField(max_length=65535, required=True)
     timestamp = mongo.DateTimeField(required=True, default=datetime.utcnow())
     attraction = mongo.ReferenceField(document_type=Attraction,
-        required = True)
+        required = True, reverse_delete_rule=2)
     upvotes = mongo.IntField(required=True, default=0)
 
     def increment_upvotes(self):
         self.upvotes += 1
+
+    def decrement_upvotes(self):
+        self.upvotes -= 1
 
 
 #TODO: Add view all reviews for majorAttractions and minorAttractions

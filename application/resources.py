@@ -74,7 +74,7 @@ class MajorAttractions(Resource):
                     response.status_code = 200
                     return response
                 else:
-                    abort(404)
+                    abort(400)
             else:
                 majorAttraction = models.MajorAttraction.objects.get_or_404(
                     id=_id)
@@ -122,7 +122,7 @@ class MajorAttractions(Resource):
 
     def put(self, _id=None, reviews=None):
         if reviews:
-            abort(404)
+            abort(400)
         if _id:
             data = request.get_json()
             if not data:
@@ -145,7 +145,7 @@ class MajorAttractions(Resource):
 
     def delete(self, _id=None, reviews=None):
         if reviews:
-            abort(404)
+            abort(400)
         if _id:
             majorAttraction = models.MajorAttraction.objects.get_or_404(id=_id)
             majorAttraction.delete()
@@ -222,7 +222,7 @@ class MinorAttractions(Resource):
                     response.status_code = 200
                     return response
                 else:
-                    abort(404)
+                    abort(400)
             else:
                 minorAttraction = \
                     models.MinorAttraction.objects.get_or_404(id=_id)
@@ -279,7 +279,7 @@ class MinorAttractions(Resource):
 
     def put(self, _id=None, reviews=None):
         if reviews:
-            abort(404)
+            abort(400)
         if _id:
             data = request.get_json()
             if not data:
@@ -311,7 +311,7 @@ class MinorAttractions(Resource):
 
     def delete(self, _id=None, reviews=None):
         if reviews:
-            abort(404)
+            abort(400)
         if _id:
             minorAttraction = models.MinorAttraction.objects.get_or_404(id=_id)
             minorAttraction.delete()
@@ -367,7 +367,7 @@ class Users(Resource):
                     response.status_code = 200
                     return response
                 else:
-                    abort(404)
+                    abort(400)
             else:
                 user = models.User.objects.get_or_404(id=_id)
                 json = loads(user.to_json())
@@ -417,7 +417,7 @@ class Users(Resource):
 
     def put(self, _id=None, history=None):
         if history:
-            abort(404)
+            abort(400)
         if _id:
             data = request.get_json()
             if not data:
@@ -442,7 +442,7 @@ class Users(Resource):
 
     def delete(self, _id=None, history=None):
         if history:
-            abort(404)
+            abort(400)
         if _id:
             user = models.User.objects.get_or_404(id=_id)
             user.delete()
@@ -468,7 +468,7 @@ class Reviews(Resource):
 
     def get(self, _id=None, upvote=None):
         if upvote:
-            abort(404)
+            abort(400)
         if _id:
             review = models.Review.objects.get_or_404(id=_id)
             json = loads(review.to_json())
@@ -487,7 +487,7 @@ class Reviews(Resource):
 
     def post(self, _id=None, upvote=None):
         if upvote:
-            abort(404)
+            abort(400)
         if _id:
             data = request.get_json()
             if not data:
@@ -530,7 +530,7 @@ class Reviews(Resource):
                     review.save()
                     return ('', 204)
                 else:
-                    abort(404)
+                    abort(400)
             else:
                 data = request.get_json()
                 if not data:
@@ -568,7 +568,7 @@ class Reviews(Resource):
                     review.save()
                     return ('', 204)
                 else:
-                    abort(404)
+                    abort(400)
             else:
                 review = models.Review.objects.get_or_404(id=_id)
                 review.attraction.dec_reviews()

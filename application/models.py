@@ -30,10 +30,10 @@ class Attraction(mongo.DynamicDocument):
     location = mongo.PointField()
     reviews = mongo.IntField(required=True, default=0)
 
-    def increment_reviews(self):
+    def inc_reviews(self):
         self.reviews += 1
 
-    def decrement_reviews(self):
+    def dec_reviews(self):
         self.reviews -= 1
 
     meta = {'allow_inheritance': True}
@@ -66,14 +66,8 @@ class Review(mongo.DynamicDocument):
         required = True, reverse_delete_rule=2)
     upvotes = mongo.IntField(required=True, default=0)
 
-    def increment_upvotes(self):
+    def inc_upvotes(self):
         self.upvotes += 1
 
-    def decrement_upvotes(self):
+    def dec_upvotes(self):
         self.upvotes -= 1
-
-
-#TODO: Add view all reviews for majorAttractions and minorAttractions
-#TODO: Add upvote functionality to reviews
-#TODO: Expand users and attractions in history and reviews and check other places
-#TODO: Add urls to resourses

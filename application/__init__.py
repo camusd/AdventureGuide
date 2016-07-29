@@ -37,29 +37,38 @@ def register_resources(api):
     from application.resources import MinorAttractions
     from application.resources import Users
     from application.resources import Reviews
-    api.add_resource(MajorAttractions, "/api/majorAttractions",
-                     endpoint="majorAttractions")
+    api.add_resource(MajorAttractions,
+                     "/api/majorAttractions/<string:_id>/<string:reviews>",
+                     endpoint="majorAttraction_reviews")
     api.add_resource(MajorAttractions,
                      "/api/majorAttractions/<string:_id>",
                      endpoint="majorAttraction")
-    api.add_resource(MinorAttractions, "/api/minorAttractions",
-                     endpoint="minorAttractions")
+    api.add_resource(MajorAttractions, "/api/majorAttractions",
+                     endpoint="majorAttractions")
+    api.add_resource(MinorAttractions,
+                     "/api/minorAttractions/<string:_id>/<string:reviews>",
+                     endpoint="minorAttraction_reviews")
     api.add_resource(MinorAttractions,
                      "/api/minorAttractions/<string:_id>",
                      endpoint="minorAttraction")
-    api.add_resource(Users, "/api/users",
-                     endpoint="users")
+    api.add_resource(MinorAttractions, "/api/minorAttractions",
+                     endpoint="minorAttractions")
     api.add_resource(Users,
                      "/api/users/<string:_id>/<string:history>",
                      endpoint="user_history")
     api.add_resource(Users,
                      "/api/users/<string:_id>",
                      endpoint="user")
-    api.add_resource(Reviews, "/api/reviews",
-                     endpoint="reviews")
+    api.add_resource(Users, "/api/users",
+                     endpoint="users")
+    api.add_resource(Reviews,
+                     "/api/reviews/<string:_id>/<string:upvote>",
+                     endpoint="upvote_review")
     api.add_resource(Reviews,
                      "/api/reviews/<string:_id>",
                      endpoint="review")
+    api.add_resource(Reviews, "/api/reviews",
+                     endpoint="reviews")
 
 register_resources(api)
 

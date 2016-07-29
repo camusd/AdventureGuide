@@ -55,14 +55,34 @@ class MajorAttractions(Resource):
 
         super(MajorAttractions, self).__init__()
 
-    def get(self, _id=None):
+    def get(self, _id=None, reviews=None):
         if _id:
-            majorAttraction = models.MajorAttraction.objects.get_or_404(id=_id)
-            json = loads(majorAttraction.to_json())
-            json = JSONEncoder().encode(json)
-            response = jsonify(loads(json))
-            response.status_code = 200
-            return response
+            if reviews:
+                if reviews == 'reviews':
+                    data = []
+                    cursor = models.Review.objects(attraction=_id)
+                    for review in cursor:
+                        json = loads(review.to_json())
+                        json['attraction_url'] = review.attraction.url
+                        json['user_url'] = review.user.url
+                        json['user_history_url'] = review.user.history_url
+                        json['timestamp'] = json['timestamp'].strftime(
+                            '%Y-%m-%dT%H:%M:%SZ')
+                        json = JSONEncoder().encode(json)
+                        data.append(loads(json))
+                    response = jsonify(data)
+                    response.status_code = 200
+                    return response
+                else:
+                    abort(404)
+            else:
+                majorAttraction = models.MajorAttraction.objects.get_or_404(
+                    id=_id)
+                json = loads(majorAttraction.to_json())
+                json = JSONEncoder().encode(json)
+                response = jsonify(loads(json))
+                response.status_code = 200
+                return response
         else:
             data = []
             cursor = models.MajorAttraction.objects.all()
@@ -89,6 +109,9 @@ class MajorAttractions(Resource):
         majorAttraction.save()
         majorAttraction.url = APP_URL + "/api/majorAttraction/" + \
             str(majorAttraction.id)
+        majorAttraction.reviews_url = APP_URL + "/api/majorAttraction/" + \
+            str(majorAttraction.id) + "/reviews"
+        majorAttraction.save()
         json = loads(majorAttraction.to_json())
         json = JSONEncoder().encode(json)
         response = jsonify(loads(json))
@@ -97,7 +120,9 @@ class MajorAttractions(Resource):
             str(majorAttraction.id)
         return response
 
-    def put(self, _id=None):
+    def put(self, _id=None, reviews=None):
+        if reviews:
+            abort(404)
         if _id:
             data = request.get_json()
             if not data:
@@ -118,7 +143,9 @@ class MajorAttractions(Resource):
         else:
             abort(404)
 
-    def delete(self, _id=None):
+    def delete(self, _id=None, reviews=None):
+        if reviews:
+            abort(404)
         if _id:
             majorAttraction = models.MajorAttraction.objects.get_or_404(id=_id)
             majorAttraction.delete()
@@ -173,23 +200,46 @@ class MinorAttractions(Resource):
 
         super(MinorAttractions, self).__init__()
 
-    def get(self, _id=None):
+    def get(self, _id=None, reviews=None):
         if _id:
-            minorAttraction = models.MinorAttraction.objects.get_or_404(id=_id)
-            json = loads(minorAttraction.to_json())
-            json['majorAttraction'] = loads(
-                minorAttraction.majorAttraction.to_json())
-            json = JSONEncoder().encode(json)
-            response = jsonify(loads(json))
-            response.status_code = 200
-            return response
+            if reviews:
+                if reviews == 'reviews':
+                    data = []
+                    minorAttraction = \
+                        models.MinorAttraction.objects.get_or_404(id=_id)
+                    cursor = models.Review.objects(
+                        attraction=minorAttraction)
+                    for review in cursor:
+                        json = loads(review.to_json())
+                        json['attraction_url'] = review.attraction.url
+                        json['user_url'] = review.user.url
+                        json['user_history_url'] = review.user.history_url
+                        json['timestamp'] = json['timestamp'].strftime(
+                            '%Y-%m-%dT%H:%M:%SZ')
+                        json = JSONEncoder().encode(json)
+                        data.append(loads(json))
+                    response = jsonify(data)
+                    response.status_code = 200
+                    return response
+                else:
+                    abort(404)
+            else:
+                minorAttraction = \
+                    models.MinorAttraction.objects.get_or_404(id=_id)
+                json = loads(minorAttraction.to_json())
+                json['majorAttraction_url'] = \
+                    minorAttraction.majorAttraction.url
+                json = JSONEncoder().encode(json)
+                response = jsonify(loads(json))
+                response.status_code = 200
+                return response
         else:
             data = []
             cursor = models.MinorAttraction.objects.all()
             for attraction in cursor:
                 json = loads(attraction.to_json())
-                json['majorAttraction'] = loads(
-                    attraction.majorAttraction.to_json())
+                json['majorAttraction_url'] = \
+                    attraction.majorAttraction.url
                 json = JSONEncoder().encode(json)
                 data.append(loads(json))
             response = jsonify(data)
@@ -214,9 +264,12 @@ class MinorAttractions(Resource):
         minorAttraction.save()
         minorAttraction.url = APP_URL + "/api/minorAttraction/" + \
             str(minorAttraction.id)
+        minorAttraction.reviews_url = \
+            APP_URL + "/api/minorAttraction/" + \
+            str(minorAttraction.id) + "/reviews"
         minorAttraction.save()
         json = loads(minorAttraction.to_json())
-        json['majorAttraction'] = loads(majorAttraction.to_json())
+        json['majorAttraction_url'] = minorAttraction.majorAttraction.url
         json = JSONEncoder().encode(json)
         response = jsonify(loads(json))
         response.status_code = 201
@@ -224,24 +277,31 @@ class MinorAttractions(Resource):
             str(minorAttraction.id)
         return response
 
-    def put(self, _id=None):
+    def put(self, _id=None, reviews=None):
+        if reviews:
+            abort(404)
         if _id:
             data = request.get_json()
             if not data:
                 abort(400)
             root_args = self.root_parser.parse_args()
             if(data['location']):
-                location_args = self.location_parser.parse_args(req=root_args)
+                location_args = \
+                    self.location_parser.parse_args(req=root_args)
             if(data['details']):
-                details_args = self.details_parser.parse_args(req=root_args)
-            minorAttraction = models.MinorAttraction.objects.get_or_404(id=_id)
+                details_args = \
+                    self.details_parser.parse_args(req=root_args)
+            minorAttraction = \
+                models.MinorAttraction.objects.get_or_404(id=_id)
             majorAttraction = models.MajorAttraction.objects.get_or_404(
                 id=data['majorAttraction'])
             data['majorAttraction'] = majorAttraction
             minorAttraction.update(**data)
-            minorAttraction = models.MinorAttraction.objects.get_or_404(id=_id)
+            minorAttraction = \
+                models.MinorAttraction.objects.get_or_404(id=_id)
             json = loads(minorAttraction.to_json())
-            json['majorAttraction'] = loads(majorAttraction.to_json())
+            json['majorAttraction_url'] = \
+                minorAttraction.majorAttraction.url
             json = JSONEncoder().encode(json)
             response = jsonify(loads(json))
             response.status_code = 200
@@ -249,7 +309,9 @@ class MinorAttractions(Resource):
         else:
             abort(404)
 
-    def delete(self, _id=None):
+    def delete(self, _id=None, reviews=None):
+        if reviews:
+            abort(404)
         if _id:
             minorAttraction = models.MinorAttraction.objects.get_or_404(id=_id)
             minorAttraction.delete()
@@ -287,23 +349,25 @@ class Users(Resource):
 
     def get(self, _id=None, history=None):
         if _id:
-            if history == 'history':
-                data = []
-                cursor = models.Review.objects(user=_id)
-                for review in cursor:
-                    json = loads(review.to_json())
-                    json['attraction'] = loads(review.attraction.to_json())
-                    json['user'] = loads(review.user.to_json())
-                    json['user']['timestamp'] = \
-                        json['user']['timestamp'].strftime(
-                        '%Y-%m-%dT%H:%M:%SZ')
-                    json['timestamp'] = json['timestamp'].strftime(
-                        '%Y-%m-%dT%H:%M:%SZ')
-                    json = JSONEncoder().encode(json)
-                    data.append(loads(json))
-                response = jsonify(data)
-                response.status_code = 200
-                return response
+            if history:
+                if history == 'history':
+                    data = []
+                    cursor = models.Review.objects(user=_id)
+                    for review in cursor:
+                        json = loads(review.to_json())
+                        json['attraction_url'] = review.attraction.url
+                        json['attraction_reviews_url'] = \
+                            review.attraction.reviews_url
+                        json['user_url'] = review.user.url
+                        json['timestamp'] = json['timestamp'].strftime(
+                            '%Y-%m-%dT%H:%M:%SZ')
+                        json = JSONEncoder().encode(json)
+                        data.append(loads(json))
+                    response = jsonify(data)
+                    response.status_code = 200
+                    return response
+                else:
+                    abort(404)
             else:
                 user = models.User.objects.get_or_404(id=_id)
                 json = loads(user.to_json())
@@ -351,7 +415,9 @@ class Users(Resource):
             str(user.id)
         return response
 
-    def put(self, _id=None):
+    def put(self, _id=None, history=None):
+        if history:
+            abort(404)
         if _id:
             data = request.get_json()
             if not data:
@@ -374,7 +440,9 @@ class Users(Resource):
         else:
             abort(404)
 
-    def delete(self, _id=None):
+    def delete(self, _id=None, history=None):
+        if history:
+            abort(404)
         if _id:
             user = models.User.objects.get_or_404(id=_id)
             user.delete()
@@ -398,15 +466,16 @@ class Reviews(Resource):
 
         super(Reviews, self).__init__()
 
-    def get(self, _id=None):
+    def get(self, _id=None, upvote=None):
+        if upvote:
+            abort(404)
         if _id:
             review = models.Review.objects.get_or_404(id=_id)
             json = loads(review.to_json())
-            json['attraction'] = loads(review.attraction.to_json())
-            json['user'] = loads(review.user.to_json())
-            json['user']['timestamp'] = \
-                json['user']['timestamp'].strftime(
-                '%Y-%m-%dT%H:%M:%SZ')
+            json['attraction_url'] = review.attraction.url
+            json['attraction_reviews_url'] = review.attraction.reviews_url
+            json['user_url'] = review.user.url
+            json['user_history_url'] = review.user.history_url
             json['timestamp'] = json['timestamp'].strftime(
                 '%Y-%m-%dT%H:%M:%SZ')
             json = JSONEncoder().encode(json)
@@ -416,7 +485,9 @@ class Reviews(Resource):
         else:
             abort(404)
 
-    def post(self, _id=None):
+    def post(self, _id=None, upvote=None):
+        if upvote:
+            abort(404)
         if _id:
             data = request.get_json()
             if not data:
@@ -426,7 +497,7 @@ class Reviews(Resource):
             data['user'] = user
             attraction = models.Attraction.objects.get_or_404(
                 id=data['attraction'])
-            attraction.increment_reviews()
+            attraction.inc_reviews()
             attraction.save()
             data['attraction'] = attraction
             review = models.Review(**data)
@@ -435,11 +506,10 @@ class Reviews(Resource):
                 str(review.id)
             review.save()
             json = loads(review.to_json())
-            json['attraction'] = loads(attraction.to_json())
-            json['user'] = loads(user.to_json())
-            json['user']['timestamp'] = \
-                json['user']['timestamp'].strftime(
-                '%Y-%m-%dT%H:%M:%SZ')
+            json['attraction_url'] = review.attraction.url
+            json['attraction_reviews_url'] = review.attraction.reviews_url
+            json['user_url'] = review.user.url
+            json['user_history_url'] = review.user.history_url
             json['timestamp'] = json['timestamp'].strftime(
                 '%Y-%m-%dT%H:%M:%SZ')
             json = JSONEncoder().encode(json)
@@ -451,47 +521,64 @@ class Reviews(Resource):
         else:
             abort(404)
 
-    def put(self, _id=None):
+    def put(self, _id=None, upvote=None):
         if _id:
-            data = request.get_json()
-            if not data:
-                abort(400)
-            root_args = self.root_parser.parse_args()
-            user = models.User.objects.get_or_404(
-                id=data['user'])
-            data['user'] = user
-            attraction = models.Attraction.objects.get_or_404(
-                id=data['attraction'])
-            data['attraction'] = attraction
-            review = models.Review.objects.get_or_404(id=_id)
-            review.update(**data)
-            review = models.Review.objects.get_or_404(id=_id)
-            json = loads(review.to_json())
-            json['attraction'] = loads(attraction.to_json())
-            json['user'] = loads(user.to_json())
-            json['user']['timestamp'] = \
-                json['user']['timestamp'].strftime(
-                '%Y-%m-%dT%H:%M:%SZ')
-            json['timestamp'] = json['timestamp'].strftime(
-                '%Y-%m-%dT%H:%M:%SZ')
-            json = JSONEncoder().encode(json)
-            response = jsonify(loads(json))
-            response.status_code = 200
-            return response
+            if upvote:
+                if upvote == "upvote":
+                    review = models.Review.objects.get_or_404(id=_id)
+                    review.inc_upvotes()
+                    review.save()
+                    return ('', 204)
+                else:
+                    abort(404)
+            else:
+                data = request.get_json()
+                if not data:
+                    abort(400)
+                root_args = self.root_parser.parse_args()
+                user = models.User.objects.get_or_404(
+                    id=data['user'])
+                data['user'] = user
+                attraction = models.Attraction.objects.get_or_404(
+                    id=data['attraction'])
+                data['attraction'] = attraction
+                review = models.Review.objects.get_or_404(id=_id)
+                review.update(**data)
+                review = models.Review.objects.get_or_404(id=_id)
+                json = loads(review.to_json())
+                json['attraction_url'] = review.attraction.url
+                json['attraction_reviews_url'] = review.attraction.reviews_url
+                json['user_url'] = review.user.url
+                json['user_history_url'] = review.user.history_url
+                json['timestamp'] = json['timestamp'].strftime(
+                    '%Y-%m-%dT%H:%M:%SZ')
+                json = JSONEncoder().encode(json)
+                response = jsonify(loads(json))
+                response.status_code = 200
+                return response
         else:
             abort(404)
 
-    def delete(self, _id=None):
+    def delete(self, _id=None, upvote=None):
         if _id:
-            review = models.Review.objects.get_or_404(id=_id)
-            review.attraction.decrement_reviews()
-            review.attraction.save()
-            review.delete()
-            return ('', 204)
+            if upvote:
+                if upvote == "upvote":
+                    review = models.Review.objects.get_or_404(id=_id)
+                    review.dec_upvotes()
+                    review.save()
+                    return ('', 204)
+                else:
+                    abort(404)
+            else:
+                review = models.Review.objects.get_or_404(id=_id)
+                review.attraction.dec_reviews()
+                review.attraction.save()
+                review.delete()
+                return ('', 204)
         else:
             cursor = models.Review.objects.all()
             for review in cursor:
-                review.attraction.decrement_reviews()
+                review.attraction.dec_reviews()
                 review.attraction.save()
                 review.delete()
             return ('', 204)

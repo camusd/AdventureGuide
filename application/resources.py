@@ -504,6 +504,8 @@ class Reviews(Resource):
             review.save()
             review.url = APP_URL + "/api/reviews/" + \
                 str(review.id)
+            review.upvote_url = APP_URL + "/api/reviews/" + \
+                str(review.id) + "/upvote"
             review.save()
             json = loads(review.to_json())
             json['attraction_url'] = review.attraction.url

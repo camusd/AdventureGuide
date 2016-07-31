@@ -71,3 +71,8 @@ class Review(mongo.DynamicDocument):
 
     def dec_upvotes(self):
         self.upvotes -= 1
+
+#TODO: add rating to attractions
+#TODO: sanatize inputs
+#TODO: add url to __init__
+#TODO: add /api route that returns a bunch of urls

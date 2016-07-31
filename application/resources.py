@@ -107,16 +107,16 @@ class MajorAttractions(Resource):
         data['details'] = attractionDetails
         majorAttraction = models.MajorAttraction(**data)
         majorAttraction.save()
-        majorAttraction.url = APP_URL + "/api/majorAttraction/" + \
+        majorAttraction.url = APP_URL + "/api/majorAttractions/" + \
             str(majorAttraction.id)
-        majorAttraction.reviews_url = APP_URL + "/api/majorAttraction/" + \
+        majorAttraction.reviews_url = APP_URL + "/api/majorAttractions/" + \
             str(majorAttraction.id) + "/reviews"
         majorAttraction.save()
         json = loads(majorAttraction.to_json())
         json = JSONEncoder().encode(json)
         response = jsonify(loads(json))
         response.status_code = 201
-        response.headers['Location'] = '/api/majorAttraction/' + \
+        response.headers['Location'] = '/api/majorAttractions/' + \
             str(majorAttraction.id)
         return response
 
@@ -141,15 +141,23 @@ class MajorAttractions(Resource):
             response.status_code = 200
             return response
         else:
-            abort(404)
+            abort(400)
 
     def delete(self, _id=None, reviews=None):
-        if reviews:
-            abort(400)
         if _id:
-            majorAttraction = models.MajorAttraction.objects.get_or_404(id=_id)
-            majorAttraction.delete()
-            return ('', 204)
+            if reviews:
+                attraction = models.MajorAttraction.objects.get_or_404(id=_id)
+                cursor = models.Review.objects(attraction=attraction)
+                for review in cursor:
+                    review.attraction.dec_reviews()
+                    review.attraction.save()
+                    review.delete()
+                return ('', 204)
+            else:
+                majorAttraction = \
+                    models.MajorAttraction.objects.get_or_404(id=_id)
+                majorAttraction.delete()
+                return ('', 204)
         else:
             cursor = models.MajorAttraction.objects.all()
             for attraction in cursor:
@@ -262,10 +270,10 @@ class MinorAttractions(Resource):
         data['details'] = attractionDetails
         minorAttraction = models.MinorAttraction(**data)
         minorAttraction.save()
-        minorAttraction.url = APP_URL + "/api/minorAttraction/" + \
+        minorAttraction.url = APP_URL + "/api/minorAttractions/" + \
             str(minorAttraction.id)
         minorAttraction.reviews_url = \
-            APP_URL + "/api/minorAttraction/" + \
+            APP_URL + "/api/minorAttractions/" + \
             str(minorAttraction.id) + "/reviews"
         minorAttraction.save()
         json = loads(minorAttraction.to_json())
@@ -273,7 +281,7 @@ class MinorAttractions(Resource):
         json = JSONEncoder().encode(json)
         response = jsonify(loads(json))
         response.status_code = 201
-        response.headers['Location'] = '/api/minorAttraction/' + \
+        response.headers['Location'] = '/api/minorAttractions/' + \
             str(minorAttraction.id)
         return response
 
@@ -307,15 +315,23 @@ class MinorAttractions(Resource):
             response.status_code = 200
             return response
         else:
-            abort(404)
+            abort(400)
 
     def delete(self, _id=None, reviews=None):
-        if reviews:
-            abort(400)
         if _id:
-            minorAttraction = models.MinorAttraction.objects.get_or_404(id=_id)
-            minorAttraction.delete()
-            return ('', 204)
+            if reviews:
+                attraction = models.MinorAttraction.objects.get_or_404(id=_id)
+                cursor = models.Review.objects(attraction=attraction)
+                for review in cursor:
+                    review.attraction.dec_reviews()
+                    review.attraction.save()
+                    review.delete()
+                return ('', 204)
+            else:
+                minorAttraction = \
+                    models.MinorAttraction.objects.get_or_404(id=_id)
+                minorAttraction.delete()
+                return ('', 204)
         else:
             cursor = models.MinorAttraction.objects.all()
             for attraction in cursor:
@@ -438,15 +454,22 @@ class Users(Resource):
             response.status_code = 200
             return response
         else:
-            abort(404)
+            abort(400)
 
     def delete(self, _id=None, history=None):
-        if history:
-            abort(400)
         if _id:
-            user = models.User.objects.get_or_404(id=_id)
-            user.delete()
-            return ('', 204)
+            if history:
+                user = models.User.objects.get_or_404(id=_id)
+                cursor = models.Review.objects(user=user)
+                for review in cursor:
+                    review.attraction.dec_reviews()
+                    review.attraction.save()
+                    review.delete()
+                return ('', 204)
+            else:
+                user = models.User.objects.get_or_404(id=_id)
+                user.delete()
+                return ('', 204)
         else:
             cursor = models.User.objects.all()
             for user in cursor:
@@ -483,7 +506,7 @@ class Reviews(Resource):
             response.status_code = 200
             return response
         else:
-            abort(404)
+            abort(400)
 
     def post(self, _id=None, upvote=None):
         if upvote:
@@ -521,7 +544,7 @@ class Reviews(Resource):
                 str(review.id)
             return response
         else:
-            abort(404)
+            abort(400)
 
     def put(self, _id=None, upvote=None):
         if _id:
@@ -559,7 +582,7 @@ class Reviews(Resource):
                 response.status_code = 200
                 return response
         else:
-            abort(404)
+            abort(400)
 
     def delete(self, _id=None, upvote=None):
         if _id:
@@ -578,9 +601,4 @@ class Reviews(Resource):
                 review.delete()
                 return ('', 204)
         else:
-            cursor = models.Review.objects.all()
-            for review in cursor:
-                review.attraction.dec_reviews()
-                review.attraction.save()
-                review.delete()
-            return ('', 204)
+            abort(400)

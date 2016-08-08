@@ -74,5 +74,5 @@ class Review(mongo.DynamicDocument):
 
 #TODO: add rating to attractions
 #TODO: sanatize inputs
-#TODO: add url to __init__
+#TODO: add urls to __init__ arg parser
 #TODO: add /api route that returns a bunch of urls

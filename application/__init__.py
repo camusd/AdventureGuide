@@ -33,10 +33,10 @@ api = Api(app)
 api.representations = DEFAULT_REPRESENTATIONS
 
 def register_resources(api):
-    from application.resources import MajorAttractions
-    from application.resources import MinorAttractions
-    from application.resources import Users
-    from application.resources import Reviews
+    from application.resources import (MajorAttractions,
+                                       MinorAttractions,
+                                       Users,
+                                       Reviews)
     api.add_resource(MajorAttractions,
                      "/api/majorAttractions/<string:_id>/<string:reviews>",
                      endpoint="majorAttraction_reviews")
@@ -73,9 +73,9 @@ def register_resources(api):
 register_resources(api)
 
 def register_blueprints(app):
-    from application.views import surveys
-    from application.views import cloud
+    from application.views import surveys, cloud, howto
     app.register_blueprint(surveys)
     app.register_blueprint(cloud)
+    app.register_blueprint(howto)
 
 register_blueprints(app)

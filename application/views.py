@@ -7,6 +7,7 @@ import requests
 
 surveys = Blueprint('surveys', __name__, template_folder='templates')
 cloud = Blueprint('cloud', __name__, template_folder='templates')
+howto = Blueprint('howto', __name__, template_folder='templates')
 
 
 class SubmitView(MethodView):
@@ -103,3 +104,10 @@ class CloudView(MethodView):
 
 
 cloud.add_url_rule('/cloud', view_func=CloudView.as_view('cloud'))
+
+
+class HowToView(MethodView):
+    def get(self):
+        return render_template('howto.html')
+
+howto.add_url_rule('/howto', view_func=HowToView.as_view('howto'))

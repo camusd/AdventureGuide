@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
+<!-- TODO add more headers to make it look better -->
   <h1 class="text-center">How to use Jenkins CI with AWS EC2 and Virtual Private Cloud with Mongodb database for Python Flask</h1>
   <section id="step1">
     <div class="container">
       <div class="row">
         <h3>Step 1: Setup AWS Instances</h3>
         <p>
-          The first step we will need to get the ball rolling is to configure our Amazon Web Service (AWS) Elastic Compute Cloud (EC2) instances and a AWS Virtual Private Cloud environment. We will also need to setup our AWS Identity &amp; Access Management service (IMA). After finishing this step, you will have an ECS instance and an EC2 instance setup with Mongodb running in an AWS Virtual Private Cloud, setup with proper security and permissions for one user.
+          The first step we will need to get the ball rolling is to configure our Amazon Web Service (AWS) Elastic Compute Cloud (EC2) instances and a AWS Virtual Private Cloud (VPC) environment. We will also need to setup our AWS Identity &amp; Access Management service (IMA). After finishing this step, you will have an ECS instance and an EC2 instance setup with Mongodb running in an AWS Virtual Private Cloud, setup with proper security and permissions for one user.
         </p>
         <p>
-          The first thing we will need to do in this step is to set up an AWS account. Open http://aws.amazon.com, and choose create an AWS account. Follow the online instructions to create an account. Don't forget to document your AWS account number, as it will be needed in the following steps.
+          The first thing we will need to do in this step is to set up an AWS account. Open <a href="http://aws.amazon.com/">http://aws.amazon.com/</a>, and choose create an AWS account. Follow the online instructions to create an account. Don't forget to document your AWS account number, as it will be needed in the following steps.
         </p>
         <p>
           Now that we have an account created, it is time to setup an IAM user. Amazon recommends that the root account is never used except to create the administrator group and the first user account. After that, the administrator account can be used to create new users and instances.
@@ -18,7 +19,7 @@
           Sign in to your AWS account as root and navigate to the IAM console. It is listed under Security &amp; Identity section of the AWS dashboard. From the IAM console, navigate to Groups and create a new group. We will name this group Administrators. Click next step. On the next page, check the AdministratorAccess policy. This can be found by using the search box. Click next step and create the group.
         </p>
         <p>
-          Now that we have a group, it is time to create the first user. From the IAM console, choose Users and then create user. Choose a user name for the user and clear the checkbox to generate an access key for each user, then choose create. On the next page, click the user we just created. In the Groups tab, click add user to groups. Check the administrators group that we created earlier and click add to groups. Then, choose the security credentials tab and choose manage password. From here, select assign a custom password and type in a password and password confirmation and click apply. Finally, sign in to the new user by navigating to https://your_aws_account_id.signin.aws.amazon.com/console/ using your AWS account id.
+          Now that we have a group, it is time to create the first user. From the IAM console, choose Users and then create user. Choose a user name for the user and clear the checkbox to generate an access key for each user, then choose create. On the next page, click the user we just created. In the Groups tab, click add user to groups. Check the administrators group that we created earlier and click add to groups. Then, choose the security credentials tab and choose manage password. From here, select assign a custom password and type in a password and password confirmation and click apply. Finally, sign in to the new user by navigating to <a href="#"> https://your_aws_account_id.signin.aws.amazon.com/console/</a> using your AWS account id.
         </p>
         <p>
           It is now time to setup the build environment. From the AWS dashboard, select the EC2 console. From the navigation bar, select a region for your key pair. This region should be the same region that you intend to run your ECS instance from. In the navigation pane on the left hand side of the console, select key pairs under network &amp; security. Enter a name for the key pair and click create. Save the private key (file extention .pem) in a safe place. Make sure that only you have permission to read the private key by running chmod 400 on the private key file.
@@ -27,7 +28,21 @@
            We will now set up the ECS instance. From the AWS dashboard, navigate to the ECS console. Click get started and check both boxes. This will create a sample application on an ECS Cluster, as well store the container images securely with Amazon Container Registry. Click continue and on the next page give the repository a name, then click continue again. This will create the repository. Amazon will provide a few steps to setup the docker image.
         </p>
         <p>
-          You will need to install both AWS commandline interface and docker. You can follow the links that are provided by Amazon on the page, or if you are using a Debian flavor of Linux you can run apt install awscli and apt install docker. Once AWS commandline interface is installed, you will need to run aws configure before you run any of the commands Amazon provided. This will ask for your access key id and secret key, so be prepared to provide them. You may need to provide sudo for the commands Amazon provides. Before running any of the Amazon provided commands, we will need a functioning application that we will dockerize. You can use any application, but this guide will be using a Python Flask application. In the Follow these steps and click continue.
+          You will need to install both AWS commandline interface and docker. You can follow the links that are provided by Amazon on the page, or if you are using a Debian flavor of Linux you can run apt install awscli and apt install docker. Once AWS commandline interface is installed, you will need to run aws configure before you run any of the commands Amazon provided. This will ask for your access key id and secret key, so be prepared to provide them. You may need to provide sudo for the commands Amazon provides. Before running any of the Amazon provided commands, we will need a functioning application that we will dockerize. You can use any application, but this guide will be using a Python Flask application. In the main directory of the application, create a new file named Dockerfile.
+          <!-- TODO add image of Dockerfile -->
+          Follow these steps and click continue.
+        </p>
+        <p>
+          Our next step is spin up an AWS EC2 instance. From the AWS dashboard, select EC2. In the EC2 console, click launch instance. We will be launching an Amazon Linux AMI instance. After selecting that, choose the t2.micro option and click next. On the next page, keep everything defualt except the IAM role. We will need to click the create new IAM role button. This will open a new tab. Create a new policy and name it. Then select AmazonEC2FullAccess from the list of policys and click next and create role on the next page. Navigate back to the previous tab and select the IAM role we just created. This will require refreshing the page. Keep the default storage and click next on this page and the next one. On the security group page, we will need to open ports tcp/22 and tcp/80. By default, tcp/22 will be open, so we need to add a new rule for tcp/80. Click add rule, and in the type dropdown, select HTTP. Then click review and launch, followed by launch. AWS will prompt you to select the key pair we created earlier. find this keypair from the dropdowns and click launch instance.
+        </p>
+        <p>
+          It is now time to launch our Amazon VPC, which serves as our network infastructure. This will create the public and private subnets that we need to allow our Mongodb database to communicate with our webserver. We will use an AWS CloudFormation template to create the VPC as well as the EC2 instance and Elastic Block Store (EBS). The template will also download MongoDB for us.
+        </p>
+        <p>
+          From the AWS dashboard, navigate to the CloudFormation console. From there, click create stack. We will be using a template that can be downloaded from this url: <a href="https://s3.amazonaws.com/quickstart-reference/mongodb/latest/templates/MongoDB-VPC.template">https://s3.amazonaws.com/quickstart-reference/mongodb/latest/templates/MongoDB-VPC.template</a>. Choose upload template and select the template you downloaded and click next. Give the stack a name and confirm that the region in the top right corner of the page is correctly set to your region and that the availability zones are correctly set.. Also, make sure to select the keypair we created for the EC2 instance in the KeyName field and click next. Click next on the options page and then click create on the next page.
+        </p>
+        <p>
+
         </p>
       </div>
     </div>

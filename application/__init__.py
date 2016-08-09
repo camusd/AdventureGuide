@@ -5,8 +5,9 @@ from flask_mongoengine import MongoEngine
 from bson.json_util import dumps
 
 APP_URL = os.environ.get('APP_URL')
-if not APP_URL:
-    APP_URL = 'http://localhost:5000'
+# if not APP_URL:
+    # APP_URL = 'http://localhost:5000'
+    # APP_URL =
 
 MONGO_URL = os.environ.get('MONGO_URL')
 if not MONGO_URL:
@@ -18,7 +19,13 @@ if not SECRET_KEY:
 
 app = Flask(__name__)
 
-app.config['MONGODB_SETTINGS'] = {'DB': 'helloCloud', 'host': MONGO_URL}
+# app.config['MONGODB_SETTINGS'] = {'db': 'helloCloud', 'host': MONGO_URL}
+app.config['MONGODB_SETTINGS'] = {
+    'db': 'helloCloud',
+    'username': 'ec2-user',
+    'host': 'ec2-52-37-96-153.us-west-2.compute.amazonaws.com',
+    'port': 27017
+}
 app.config['SECRET_KEY'] = SECRET_KEY
 mongo = MongoEngine(app)
 

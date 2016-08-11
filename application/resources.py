@@ -602,3 +602,27 @@ class Reviews(Resource):
                 return ('', 204)
         else:
             abort(400)
+
+
+class Login(Resource):
+    def __init__(self):
+        self.root_parser = reqparse.RequestParser()
+        self.root_parser.add_argument('userid',
+            type=str, required=True, location='json', trim=True,
+            help="Missing userid string parameter in the JSON body")
+        self.root_parser.add_argument('userpw', type=str,
+            required=True, location='json', trim=True,
+            help="Missing userpw string parameter in the JSON body")
+
+        super(Login, self).__init__()
+
+    def post(self):
+        data = request.get_json()
+        if not data:
+            abort(400)
+        root_args = self.root_parser.parse_args()
+        user = models.User.objects.get_or_404(username = data['userid'],
+            password=data['userpw'])
+        token = user.generate_auth_token()
+        return jsonify({'newUser': user.username,
+                        'token': token})

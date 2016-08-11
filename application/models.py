@@ -1,7 +1,9 @@
 from flask import jsonify
-from application import mongo
+from application import mongo, app
 from bson.objectid import ObjectId
 from datetime import datetime
+from itsdangerous import (TimedJSONWebSignatureSerializer
+                          as Serializer, BadSignature, SignatureExpired)
 import decimal
 
 
@@ -50,11 +52,27 @@ class MinorAttraction(Attraction):
 class User(mongo.DynamicDocument):
     firstname = mongo.StringField(max_length=255, required=True)
     lastname = mongo.StringField(max_length=255, required=True)
-    username = mongo.StringField(max_length=255, required=True)
+    username = mongo.StringField(max_length=255, required=True, unique=True)
     password = mongo.StringField(max_length=255, required=True)
     timestamp = mongo.DateTimeField(required=True, default=datetime.utcnow())
     admin = mongo.BooleanField(required=True, default=False)
     email = mongo.EmailField(max_length=255, required=True)
+
+    def generate_auth_token(self, expiration=600):
+        s = Serializer(app.config['SECRET_KEY'], expires_in = expiration)
+        return s.dumps({'id': str(self.id)})
+
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except SignatureExpired:
+            return None
+        except BadSignature:
+            return None
+        user = User.objects.get_or_404(data['id'])
+        return user
 
 
 class Review(mongo.DynamicDocument):

@@ -36,7 +36,8 @@ def register_resources(api):
     from application.resources import (MajorAttractions,
                                        MinorAttractions,
                                        Users,
-                                       Reviews)
+                                       Reviews,
+                                       Login)
     api.add_resource(MajorAttractions,
                      "/api/majorAttractions/<string:_id>/<string:reviews>",
                      endpoint="majorAttraction_reviews")
@@ -69,6 +70,7 @@ def register_resources(api):
                      endpoint="review")
     api.add_resource(Reviews, "/api/reviews",
                      endpoint="reviews")
+    api.add_resource(Login, "/api/login")
 
 register_resources(api)
 

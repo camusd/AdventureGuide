@@ -633,4 +633,5 @@ class Login(Resource):
             password=data['userpw'])
         token = user.generate_auth_token()
         return jsonify({'newUser': user.username,
-                        'token': token})
+                        'token': token,
+                        'id': user.id})

@@ -520,11 +520,17 @@ class Reviews(Resource):
         if upvote:
             abort(400)
         if _id:
+            token = request.args.get('token')
+            if not token:
+                abort(401)
             data = request.get_json()
             if not data:
                 abort(400)
             root_args = self.root_parser.parse_args()
             user = models.User.objects.get_or_404(id=_id)
+            token = models.User.verify_auth_token(token)
+            if user.id != token.id:
+                abort(401)
             data['user'] = user
             attraction = models.Attraction.objects.get_or_404(
                 id=data['attraction'])

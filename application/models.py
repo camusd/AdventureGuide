@@ -72,7 +72,7 @@ class User(mongo.DynamicDocument):
             return None
         except BadSignature:
             return None
-        user = User.objects.get_or_404(data['id'])
+        user = User.objects.get_or_404(id=data['id'])
         return user
 
 

@@ -66,6 +66,7 @@ class MajorAttractions(Resource):
                     cursor = models.Review.objects(attraction=_id)
                     for review in cursor:
                         json = loads(review.to_json())
+                        json['username'] = review.user.username
                         json['attraction_url'] = review.attraction.url
                         json['user_url'] = review.user.url
                         json['user_history_url'] = review.user.history_url
@@ -225,6 +226,7 @@ class MinorAttractions(Resource):
                         attraction=minorAttraction)
                     for review in cursor:
                         json = loads(review.to_json())
+                        json['username'] = review.user.username
                         json['attraction_url'] = review.attraction.url
                         json['user_url'] = review.user.url
                         json['user_history_url'] = review.user.history_url
@@ -503,6 +505,7 @@ class Reviews(Resource):
         if _id:
             review = models.Review.objects.get_or_404(id=_id)
             json = loads(review.to_json())
+            json['username'] = review.user.username
             json['attraction_url'] = review.attraction.url
             json['attraction_reviews_url'] = review.attraction.reviews_url
             json['user_url'] = review.user.url
@@ -528,6 +531,7 @@ class Reviews(Resource):
                 abort(400)
             root_args = self.root_parser.parse_args()
             user = models.User.objects.get_or_404(id=_id)
+            print(user)
             token = models.User.verify_auth_token(token)
             if user.id != token.id:
                 abort(401)
@@ -545,6 +549,7 @@ class Reviews(Resource):
                 str(review.id) + "/upvote"
             review.save()
             json = loads(review.to_json())
+            json['username'] = review.user.username
             json['attraction_url'] = review.attraction.url
             json['attraction_reviews_url'] = review.attraction.reviews_url
             json['user_url'] = review.user.url
@@ -571,12 +576,18 @@ class Reviews(Resource):
                 else:
                     abort(400)
             else:
+                token = request.args.get('token')
+                if not token:
+                    abort(401)
                 data = request.get_json()
                 if not data:
                     abort(400)
                 root_args = self.root_parser.parse_args()
                 user = models.User.objects.get_or_404(
                     id=data['user'])
+                token = models.User.verify_auth_token(token)
+                if user.id != token.id:
+                    abort(401)
                 data['user'] = user
                 attraction = models.Attraction.objects.get_or_404(
                     id=data['attraction'])
@@ -585,6 +596,7 @@ class Reviews(Resource):
                 review.update(**data)
                 review = models.Review.objects.get_or_404(id=_id)
                 json = loads(review.to_json())
+                json['username'] = review.user.username
                 json['attraction_url'] = review.attraction.url
                 json['attraction_reviews_url'] = review.attraction.reviews_url
                 json['user_url'] = review.user.url
@@ -609,7 +621,13 @@ class Reviews(Resource):
                 else:
                     abort(400)
             else:
+                token = requests.args.get('token')
+                if not token:
+                    abort(401)
                 review = models.Review.objects.get_or_404(id=_id)
+                token = models.User.verify_auth_token(token)
+                if review.User.id != token.id:
+                    abort(401)
                 review.attraction.dec_reviews()
                 review.attraction.save()
                 review.delete()

@@ -417,10 +417,11 @@ class Users(Resource):
         if not data:
             abort(400)
         root_args = self.root_parser.parse_args()
-        if data['admin'] == "true":
-            data['admin'] = True
-        else:
-            data['admin'] = False
+        if 'admin' in data:
+            if data['admin'] == "true":
+                data['admin'] = True
+            else:
+                data['admin'] = False
         user = models.User(**data)
         user.save()
         user.url = APP_URL + "/api/users/" + \
@@ -445,10 +446,11 @@ class Users(Resource):
             if not data:
                 abort(400)
             root_args = self.root_parser.parse_args()
-            if data['admin'] == "true":
-                data['admin'] = True
-            else:
-                data['admin'] = False
+            if 'admin' in data:
+                if data['admin'] == "true":
+                    data['admin'] = True
+                else:
+                    data['admin'] = False
             user = models.User.objects.get_or_404(id=_id)
             user.update(**data)
             user = models.User.objects.get_or_404(id=_id)

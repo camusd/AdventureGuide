@@ -31,6 +31,7 @@ class Attraction(mongo.DynamicDocument):
     details = mongo.EmbeddedDocumentField(document_type=AttractionDetails)
     location = mongo.PointField()
     reviews = mongo.IntField(required=True, default=0)
+    image = mongo.URLField(max_length=255, required=True)
 
     def inc_reviews(self):
         self.reviews += 1

@@ -30,6 +30,9 @@ class MajorAttractions(Resource):
         self.root_parser.add_argument('location', type=dict,
             location='json',
             help="Missing location embedded JSON object in the JSON body")
+        self.root_parser.add_argument('image', type=str,
+            location='json',
+            help="Missing image URL parameter in the JSON body")
 
         self.location_parser = reqparse.RequestParser()
         self.location_parser.add_argument('type', type=str,
@@ -128,9 +131,9 @@ class MajorAttractions(Resource):
             if not data:
                 abort(400)
             root_args = self.root_parser.parse_args()
-            if(data['location']):
+            if('location' in data):
                 location_args = self.location_parser.parse_args(req=root_args)
-            if(data['details']):
+            if('details' in data):
                 details_args = self.details_parser.parse_args(req=root_args)
             majorAttraction = models.MajorAttraction.objects.get_or_404(id=_id)
             majorAttraction.update(**data)
@@ -183,6 +186,9 @@ class MinorAttractions(Resource):
         self.root_parser.add_argument('location', type=dict,
             location='json',
             help="Missing location embedded JSON object in the JSON body")
+        self.root_parser.add_argument('image', type=str,
+            location='json',
+            help="Missing image URL parameter in the JSON body")
 
         self.location_parser = reqparse.RequestParser()
         self.location_parser.add_argument('type', type=str,
@@ -259,9 +265,9 @@ class MinorAttractions(Resource):
         if not data:
             abort(400)
         root_args = self.root_parser.parse_args()
-        if(data['location']):
+        if('location' in data):
             location_args = self.location_parser.parse_args(req=root_args)
-        if(data['details']):
+        if('location' in data):
             details_args = self.details_parser.parse_args(req=root_args)
         majorAttraction = models.MajorAttraction.objects.get_or_404(
             id=data['majorAttraction'])

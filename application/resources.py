@@ -621,7 +621,7 @@ class Reviews(Resource):
                 else:
                     abort(400)
             else:
-                token = requests.args.get('token')
+                token = request.args.get('token')
                 if not token:
                     abort(401)
                 review = models.Review.objects.get_or_404(id=_id)

@@ -626,7 +626,7 @@ class Reviews(Resource):
                     abort(401)
                 review = models.Review.objects.get_or_404(id=_id)
                 token = models.User.verify_auth_token(token)
-                if review.User.id != token.id:
+                if review.user.id != token.id:
                     abort(401)
                 review.attraction.dec_reviews()
                 review.attraction.save()

@@ -2,9 +2,9 @@
 {% block content %}
   <h1>Hello Cloud!</h1>
   <p>Current time of day on Heroku instance: {{ time }}</p>
-  <p>Current temp in Corvallis: {{ weather.current_observation.temp_f }}</p>
-  <p>Current weather in Corvallis: {{ weather.current_observation.weather}}</p>
-  <p>Current forecast for today in Corvallis: {{ weather.forecast.txt_forecast.forecastday[0].fcttext }}</p>
+  <p>Current temp in Hillsboro: {{ weather.current_observation.temp_f }}</p>
+  <p>Current weather in Hillsboro: {{ weather.current_observation.weather}}</p>
+  <p>Current forecast for today in Hillsboro: {{ weather.forecast.txt_forecast.forecastday[0].fcttext }}</p>
   <img src="https://icons.wxug.com/logos/JPG/wundergroundLogo_4c_horz.jpg">
   <p><em>All weather data gathered from Weather Underground API</em></p>
 {% endblock %}

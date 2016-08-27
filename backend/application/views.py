@@ -94,8 +94,8 @@ surveys.add_url_rule('/surveyResults/<_id>', view_func=EditView.as_view('edit'))
 class CloudView(MethodView):
     def get(self):
         time = datetime.now().strftime("%H:%M:%S")
-        result1 = requests.get('http://api.wunderground.com/api/8dab10257277cb6e/conditions/q/OR/Corvallis.json')
-        result2 = requests.get('http://api.wunderground.com/api/8dab10257277cb6e/forecast/q/OR/Corvallis.json')
+        result1 = requests.get('http://api.wunderground.com/api/8dab10257277cb6e/conditions/q/OR/Hillsboro.json')
+        result2 = requests.get('http://api.wunderground.com/api/8dab10257277cb6e/forecast/q/OR/Hillsboro.json')
         weather = result1.json()
         weather.update(result2.json())
         return render_template('cloud.html',

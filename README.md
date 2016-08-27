@@ -1,5 +1,5 @@
 # AdventureGuide
-Adventure Guide is a native mobile application that allows users to learn about the various beautiful natural attractions that can be found throught Oregon. The application is built with a native Android frontend with a Flask REST API backend hosted in the cloud using Heroku.
+Adventure Guide is a native mobile application that allows users to learn about the various beautiful natural attractions that can be found throughout Oregon. The application is built with a native Android frontend and a Flask REST API backend hosted in the cloud using Heroku.
 Current features:
 * Account creation and authentication
 * View information about various major natural attractions in Oregon such the Columbia Gorge

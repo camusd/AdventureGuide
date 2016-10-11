@@ -5,7 +5,7 @@ from flask_mongoengine.wtf import model_form
 from datetime import datetime
 import requests
 
-index = Blueprint('index', __name__, template_folder='frontend')
+index = Blueprint('index', __name__, template_folder='templates')
 surveys = Blueprint('surveys', __name__, template_folder='templates')
 cloud = Blueprint('cloud', __name__, template_folder='templates')
 howto = Blueprint('howto', __name__, template_folder='templates')
@@ -13,7 +13,7 @@ howto = Blueprint('howto', __name__, template_folder='templates')
 class ReactView(View):
 
     def dispatch_request(self):
-        return render_template('build/index.html')
+        return render_template('index.html')
 
 
 index.add_url_rule('/', view_func=ReactView.as_view('index'))

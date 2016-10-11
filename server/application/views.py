@@ -16,7 +16,7 @@ class ReactView(View):
         return render_template('index.html')
 
 
-index.add_url_rule('/', view_func=ReactView.as_view('index'))
+index.add_url_rule('/react', view_func=ReactView.as_view('react'))
 
 class SubmitView(MethodView):
 
@@ -92,7 +92,7 @@ class EditView(MethodView):
         return ('', 204)
 
 
-surveys.add_url_rule('/survey', view_func=SubmitView.as_view('submit'))
+surveys.add_url_rule('/', view_func=SubmitView.as_view('submit'))
 surveys.add_url_rule('/surveyResults', view_func=ListView.as_view('list'))
 surveys.add_url_rule('/surveyResults/<_id>', view_func=EditView.as_view('edit'))
 

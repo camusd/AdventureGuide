@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+    {% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    <title>Hello Cloud!</title>
+    {% endif %}
+    <style>.content {padding-top: 80px;}
+           footer {padding-top: 80px;}</style>
+  </head>
+  <body>
+
+    {%- block topbar -%}
+    <nav id="nav" class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="/">Home</a>
+            </li>
+            <li>
+              <a href="/surveyResults">Results</a>
+            </li>
+            <li>
+              <a href="/cloud">Weather</a>
+            </li>
+            <li>
+              <a href="/howto">How To Guide</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    {%- endblock -%}
+    <div class="container">
+      <div class="content">
+        {% block page_header %}{% endblock %}
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+    <footer class="text-center">
+      <span>&#169; Dylan Camus 2016. All rights reserved</span>
+      <script   src="https://code.jquery.com/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+      {% block js_footer %}{% endblock %}
+    </footer>
+  </body>
+</html>
